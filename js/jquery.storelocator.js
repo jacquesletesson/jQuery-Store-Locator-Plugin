@@ -19,6 +19,7 @@ $.fn.storeLocator = function(options) {
       'pinTextColor': '000000',
       'lengthUnit': 'm',
       'storeLimit': 26,
+      'storeOnMap': false,
       'distanceAlert': 60,
       'dataType': 'xml',
       'dataLocation': 'locations.xml',
@@ -793,6 +794,33 @@ $.fn.storeLocator = function(options) {
                   });
                 }
 
+              }
+
+              if(settings.storeOnMap === 'true'){
+                // Add event listener for center change
+                google.maps.event.addListener(map, 'center_changed', function() {
+                  checkVisibleMarker();
+                });
+
+                // Add event listener for zoom change
+                google.maps.event.addListener(map, 'zoom_changed', function() {
+                  checkVisibleMarker();
+                });
+
+                function checkVisibleMarker(){
+                  $("#" + settings.listDiv + ' ul').empty();
+                  $(markers).each(function(x, marker){
+                    if(map.getBounds().contains(marker.getPosition()))
+                    {
+                      //Define the location data
+                      locations = define_location_data(marker);
+                      //Set up the list template with the location data
+                      listHtml = listTemplate(locations);
+                      //console.log(listHtml);
+                      $('#' + settings.listDiv + ' ul').append(listHtml);
+                    }
+                  })
+                }
               }
 
           });
