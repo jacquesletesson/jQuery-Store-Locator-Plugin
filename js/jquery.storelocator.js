@@ -797,6 +797,12 @@ $.fn.storeLocator = function(options) {
               }
 
               if(settings.storeOnMap === 'true'){
+                // Add event listener to filter the list when the map is fully loaded
+                google.maps.event.addListenerOnce(map, 'idle', function(){
+				  checkVisibleMarker();
+			    });
+              
+              
                 // Add event listener for center change
                 google.maps.event.addListener(map, 'center_changed', function() {
                   checkVisibleMarker();
